@@ -1,0 +1,2 @@
+# Tryb-promise
+Resolve
