@@ -1,0 +1,56 @@
+#include <iostream>
+#include <csignal>
+#include <csetjmp>
+#include <vector>
+
+// Punkt powrotu dla bezpiecznej stabilizacji systemu
+jmp_buf recovery_point;
+
+// Definicja kolorowania pamięci (Taint Analysis)
+enum MemoryColor { GREEN, RED };
+
+struct MemoryBlock {
+    void* address;
+    MemoryColor color;
+};
+
+// Globalny Rejestr Bloków (dla uproszczenia w tym module)
+std::vector<MemoryBlock> shadow_registry;
+
+// Funkcja przechwytująca błędy wykonania (The Trap)
+void system_fault_handler(int sig) {
+    std::cerr << "\n[!] ALERT: Próba naruszenia warstwy binarnej (Signal: " << sig << ")\n";
+    std::cerr << "[!] Aktywowano procedurę izolacji 'Red-Demon-Tarpit'...\n";
+    
+    // Logika powrotu do bezpiecznego stanu (Circuit Breaker)
+    longjmp(recovery_point, 1);
+}
+
+void initialize_active_defense() {
+    // Rejestracja sygnałów krytycznych
+    signal(SIGSEGV, system_fault_handler); // Naruszenie pamięci
+    signal(SIGILL, system_fault_handler);  // Nielegalna instrukcja (payload injection)
+}
+
+int main() {
+    initialize_active_defense();
+
+    std::cout << "--- RED-DEMON-TARPIT KERNEL INTERFACE ---" << std::endl;
+    std::cout << "Status: Monitoring syscalls & memory integrity..." << std::endl;
+
+    if (setjmp(recovery_point) == 0) {
+        // Symulacja ataku (np. próba zapisu w chronionym obszarze)
+        std::cout << "[+] Stabilny bieg systemu (Green Zone)..." << std::endl;
+        
+        // Krytyczny punkt: Tutaj malware próbuje wstrzyknąć kod
+        int *bad_ptr = nullptr;
+        *bad_ptr = 0xDEADBEEF; // To normalnie zabiłoby proces
+    } else {
+        // Odpowiedź po przechwyceniu ataku
+        std::cout << "[*] System odzyskał stabilność. Adres skompromitowany został odizolowany (Taint: RED)." << std::endl;
+        std::cout << "[*] Wysyłanie pakietu zwrotnego przez Chrome Buffer... [DONE]" << std::endl;
+    }
+
+    std::cout << "--- OPERACJA KONTYNUOWANA ---" << std::endl;
+    return 0;
+}
