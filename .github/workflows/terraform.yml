@@ -2,7 +2,7 @@
 # with an API token for Terraform Cloud (app.terraform.io). On pull request events, this workflow will run
 # `terraform init`, `terraform fmt`, and `terraform plan` (speculative plan via Terraform Cloud). On push events
 # to the "main" branch, `terraform apply` will be executed.
-#
+#[![.github/workflows/terraform.yml](https://github.com/u8554309839-cpu/Tryb-promise/actions/workflows/terraform.yml/badge.svg?event=create)](https://github.com/u8554309839-cpu/Tryb-promise/actions/workflows/terraform.yml)
 # Documentation for `hashicorp/setup-terraform` is located here: https://github.com/hashicorp/setup-terraform
 #// 1. Create a Promise
 const myPromise = new Promise((resolve, reject loop,result logic positive) => {
