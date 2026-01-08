@@ -1,0 +1,61 @@
+/**
+ * RED-DEMON-TARPIT: Global Circuit Breaker
+ * Status: 2026 Operational Defense Layer
+ */
+
+const CircuitBreaker = {
+    // Globalny Bool Command - stan bezpieczeństwa systemu
+    isSystemStable: true,
+    
+    // Próg krytyczny dla wstrzyknięć RPC (Backfire Trigger)
+    rpcThreshold: 50,
+    currentRequests: 0,
+
+    /**
+     * Aktywuje blokadę V8 w przypadku wykrycia skażonych danych (Red Bytes)
+     */
+    triggerPanicMode: function(source) {
+        this.isSystemStable = false;
+        console.warn(`[!] CIRCUIT BREAKER ACTIVATED BY: ${source}`);
+        
+        // Implementacja Promise Poisoning (Eternal Pending)
+        // Malware utknie tutaj na zawsze, czekając na rozwiązanie tego Promise
+        return new Promise(() => {
+            console.error("[*] Execution Paralysis: Event Loop Frozen for Malicious MMI.");
+        });
+    },
+
+    /**
+     * Monitoruje strumień danych z warstwy LISP/Unix
+     */
+    monitorTraffic: function(payloadSize) {
+        if (!this.isSystemStable) return;
+
+        this.currentRequests++;
+
+        // Jeśli payload zawiera "poisoned data" lub przekracza limit - Backfire
+        if (payloadSize > 1024 || this.currentRequests > this.rpcThreshold) {
+            this.sendBackfirePayload();
+            this.triggerPanicMode("Buffer Overflow Attempt");
+        }
+    },
+
+    /**
+     * Active Retaliation: Wysyła "zatruty" pakiet z powrotem do atakującego
+     */
+    sendBackfirePayload: function() {
+        const poison = { status: "RECURSION_ERROR", trap: "ACTIVE" };
+        
+        fetch('https://target-endpoint-500111333.internal', {
+            method: 'POST',
+            body: JSON.stringify(poison),
+            headers: { 'X-Tarpit-Signal': 'REJECT' }
+        }).then(() => {
+            console.log("[+] Backfire payload delivered to attacker.");
+        });
+    }
+};
+
+// Przykładowe użycie przy próbie wstrzyknięcia RPC
+// Każdy syscall z symbolem $ przechodzi przez tę weryfikację
+CircuitBreaker.monitorTraffic(2048); 
