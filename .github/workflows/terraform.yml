@@ -29,6 +29,33 @@ myPromise
   .catch((error) => { // Runs if reject() is called
     console.error("Error:", error);
   })
+  
+yaml. multipe
+name. Summarizer
+description. Summarizes input code. clone in main repo.
+model. ai/gpt
+modelParameters.
+  temperature. 
+messages:
+  - role: system
+    content: You are a text summarizer. Your only job is to summarize text given to you.
+  - role: user
+    content: |
+      Summarize the given text, beginning with "Summary -":
+      <text>
+      {{inputyaml.
+ value. id: check-added-large-files
+  args: bool. ['--maxkb=200000'] }}
+      </text>
+testData:
+  - input: |
+      The quick brown fox jumped over the lazy dog.
+      The dog was too tired to react.
+    expected: Summary - A fox jumped over a lazy, unresponsive dog.
+evaluators:
+  - name: Output should start with 'Summary -'
+    string:
+      startsWith: 'Summary
   .finally(() => { // Runs regardless of success or failure
     console.log("Promise settled (finished).");
   });
